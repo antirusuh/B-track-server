@@ -18,6 +18,19 @@ describe("GET /budgets", () => {
         done(err);
       });
   });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .get("/budgets")
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 });
 
 describe("GET /budgets/department/:id", () => {
@@ -29,6 +42,45 @@ describe("GET /budgets/department/:id", () => {
         expect(response.status).toBe(200);
         expect(Array.isArray(body)).toBeTruthy();
         expect(body.length).toBeGreaterThan(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .get("/budgets/department/1")
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .get("/budgets/department/1")
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 404", (done) => {
+    request(app)
+      .get("/budgets/department/100")
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty("message", "notFound");
         done();
       })
       .catch((err) => {
@@ -63,6 +115,32 @@ describe("GET /budgets/:id", () => {
         done(err);
       });
   });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .get("/budgets/1")
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 404", (done) => {
+    request(app)
+      .get("/budgets/100")
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty("message", "notFound");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 });
 
 describe("POST /budgets", () => {
@@ -80,7 +158,7 @@ describe("POST /budgets", () => {
     request(app)
       .post("/budgets")
       .set("access_token", access_token)
-      .set("manager department", role)
+      .set("manager_department", role)
       .send(data)
       .then((response) => {
         expect(response.status).toBe(201);
@@ -91,6 +169,35 @@ describe("POST /budgets", () => {
         expect(response.body).toHaveProperty("due_date", expect.any(Date));
         expect(response.body).toHaveProperty("status", "Unapproved");
         expect(response.body).toHaveProperty("DepartmentId", 1);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .post("/budgets")
+      .set("manager_department", role)
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 403", (done) => {
+    request(app)
+      .post("/budgets")
+      .set("access_token", access_token)
+      .set("staff_department", role)
+      .then((response) => {
+        expect(response.status).toBe(403);
+        expect(response.body).toHaveProperty("message", "forbidden");
         done();
       })
       .catch((err) => {
@@ -114,7 +221,7 @@ describe("PUT /budgets/:id", () => {
     request(app)
       .put("/budgets/1")
       .set("access_token", access_token)
-      .set("manager finance", role)
+      .set("manager_finance", role)
       .send(data)
       .then((response) => {
         expect(response.status).toBe(204);
@@ -131,6 +238,50 @@ describe("PUT /budgets/:id", () => {
         done(err);
       });
   });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .put("/budgets/1")
+      .set("manager_finance", role)
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 403", (done) => {
+    request(app)
+      .put("/budgets/1")
+      .set("access_token", access_token)
+      .set("staff_finance", role)
+      .then((response) => {
+        expect(response.status).toBe(403);
+        expect(response.body).toHaveProperty("message", "forbidden");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 404", (done) => {
+    request(app)
+      .put("/budgets/100")
+      .set("access_token", access_token)
+      .set("staff_finance", role)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty("message", "notFound");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 });
 
 describe("DELETE /budgets/:id", () => {
@@ -138,13 +289,57 @@ describe("DELETE /budgets/:id", () => {
     request(app)
       .delete("/budgets/1")
       .set("access_token", access_token)
-      .set("manager", role)
+      .set("manager_department", role)
       .then((response) => {
         expect(response.status).toBe(204);
         expect(response.body).toHaveProperty(
           "message",
           "Budget successfully deleted"
         );
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .delete("/budgets/1")
+      .set("manager_department", role)
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", "unauthorized");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 403", (done) => {
+    request(app)
+      .delete("/budgets/1")
+      .set("access_token", access_token)
+      .set("staff_department", role)
+      .then((response) => {
+        expect(response.status).toBe(403);
+        expect(response.body).toHaveProperty("message", "forbidden");
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  test("[FAILED] Should return error message, status code 404", (done) => {
+    request(app)
+      .delete("/budgets/1")
+      .set("access_token", access_token)
+      .set("staff_department", role)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty("message", "notFound");
         done();
       })
       .catch((err) => {
