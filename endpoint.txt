@@ -8,7 +8,7 @@ POST /register
 BUDGET
 
 GET	/budgets 		=> get all budget
-GET	/budgets/:departmentId	=> Get budget by departmen
+GET	/budgets/department/:id	=> Get budget by departmen
 GET	/budgets/:id		=> Detail budget
 POST	/budgets		=> request budget dari manager department
 PUT	/budgets/:id		=> edit amount dan status
@@ -20,3 +20,10 @@ POST	/transactions/:budgetId
 PUT	/transactions/:id
 DELETE	/transactions/:id
 
+Department
+
+GET /departments
+
+Category
+
+GET /categories
