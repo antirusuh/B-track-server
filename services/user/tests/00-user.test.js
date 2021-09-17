@@ -67,7 +67,7 @@ describe('POST /register [SUCCESS CASE]', () => {
                 expect(body).toHaveProperty('role', expect.any(String))
                 expect(body.role).toMatch(userTestData.role)
                 expect(body).toHaveProperty('DepartmentId', expect.any(Number))
-                expect(body.DepartmentId).toMatch(userTestData.DepartmentId)
+                expect(body.DepartmentId).toBe(userTestData.DepartmentId)
                 // expect(body).toHaveProperty('Department', expect.any(Object))
                 // expect(body.Department).toHaveProperty('name', expect.any(String))
                 // expect(body.Department.name).toMatch('Finance')
@@ -117,8 +117,9 @@ describe('POST /register [ERROR CASE]', () => {
             .then(({ status, body }) => {
                 expect(status).toBe(400)
                 expect(body).toHaveProperty('message', expect.any(Array))
-                expect(body.message).toHaveLength(1)
+                expect(body.message).toHaveLength(2)
                 expect(body.message[0]).toMatch('Email cannot be empty')
+                expect(body.message[1]).toMatch('Invalid email format')
                 expect(body).not.toHaveProperty('id')
                 expect(body).not.toHaveProperty('email')
                 expect(body).not.toHaveProperty('username')
@@ -352,7 +353,7 @@ describe('POST /register [ERROR CASE]', () => {
                 expect(status).toBe(400)
                 expect(body).toHaveProperty('message', expect.any(Array))
                 expect(body.message).toHaveLength(1)
-                expect(body.message[0]).toMatch('PLease Select Department')
+                expect(body.message[0]).toMatch('Please select department')
                 expect(body).not.toHaveProperty('id')
                 expect(body).not.toHaveProperty('email')
                 expect(body).not.toHaveProperty('username')
@@ -391,7 +392,7 @@ describe('POST /login [SUCCESS CASE]', () => {
 })
 
 describe('POST /login [ERROR CASE]', () => {
-    test('Wrong Email | Should return an Object with message | Status code 401 ', () => {
+    test('Wrong Email | Should return an Object with message | Status code 401 ', (done) => {
         let wrongEmailData = {
             ...userTestLoginData, email: 'wrongemail'
         }
@@ -414,7 +415,7 @@ describe('POST /login [ERROR CASE]', () => {
             });
     })
 
-    test('Wrong Password | Should return an Object with message | Status code 401 ', () => {
+    test('Wrong Password | Should return an Object with message | Status code 401 ', (done) => {
         let wrongPasswordLoginData = {
             ...userTestLoginData, password: 'wrong'
         }

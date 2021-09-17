@@ -9,3 +9,8 @@ function signJWT(payload) {
 function verifyJWT(access_token) {
     return jwt.verify(access_token, JWTSecret)
 }
+
+module.exports = {
+    signJWT,
+    verifyJWT
+}
