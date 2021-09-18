@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      intial_amount: {
+      initial_amount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
