@@ -21,20 +21,28 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         validate: {
           notEmpty: {
-            msg: "Username required",
+            msg: "Username cannot be Empty",
+          },
+          notNull: {
+            msg: 'Username cannot be null'
           },
         },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: {
+          msg: 'Email already exist'
+        },
         validate: {
           notEmpty: {
-            msg: "Email required",
+            msg: "Email cannot be empty",
           },
+          notNull: {
+            msg: 'Email cannot be null'
+          }, 
           isEmail: {
-            msg: "Must be an email",
+            msg: "Invalid email format",
           },
         },
       },
@@ -43,11 +51,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Password required",
+            msg: "Password cannot be empty",
+          },
+          notNull: {
+            msg: 'Password cannot be null'
           },
           len: {
             args: [5],
-            message: "Password too short",
+            msg: "Password too short",
           },
         },
       },
@@ -56,8 +67,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Role required",
+            msg: "Role cannot be Empty",
           },
+          notNull: {
+            msg: 'Role cannot be null'
+          }
         },
       },
       DepartmentId: {
@@ -65,11 +79,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: "Role required",
+            msg: "DepartmentId cannot be empty",
           },
           isNumeric: {
             msg: "Must be number",
           },
+          notNull: {
+            msg: 'Please select department'
+          }
         },
       },
     },
