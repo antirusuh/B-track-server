@@ -29,6 +29,10 @@ const errorHandler = function (err, req, res, next) {
       message = "Email or password incorrect";
       code = 400;
       break;
+    case "JsonWebTokenError":
+      message = "Invalid Token";
+      code = 401;
+      break;
     default:
       message = "Internal Server Error";
       code = 500;
