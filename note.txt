@@ -1,0 +1,72 @@
+SERVER SIDE
+0. baca test, bikin bin/www masukin port dan listen, di package json gnti script test dan dev
+1. npm init
+2. install express pg sequelize cors bcrypt jsonwebtoken
+npm install --save-dev jest
+npm install supertest --save-dev
+3. GIT IGNORE
+4. sequelize init
+5. atur config
+6. create database
+7. generate model
+8. buat kolom foreign key https://sequelize.org/master/class/lib/dialects/abstract/query-interface.js~QueryInterface.html#instance-method-createTable
+9. buat association https://sequelize.org/master/class/lib/associations/base.js~Association.html
+10. generate seed,tambah created at sama updated at
+11. di app.js use urlencoded, use json, use cors, listen port
+12. gausah bkin controller, di app.js aja smuanya
+13. bikin helper, bcrypt bwt hash di user, bcrypt bwt check password di login, jwt bwt sign di login, jwt verify di authentication
+14. bikin middlewares authentication, authorization, error handler buat di app aja
+15. di authentication verify token, bikin data tambahan
+16. authorization cek datanya ada ga trus cek apakah usernya atau bukan, dll, kalo ok next
+
+bcrypt https://www.npmjs.com/package/bcrypt
+JWT https://www.npmjs.com/package/jsonwebtoken
+cors http://expressjs.com/en/resources/middleware/cors.html
+
+super many to many https://sequelize.org/master/manual/advanced-many-to-many.html#the-best-of-both-worlds--the-super-many-to-many-relationship
+sequelize hooks https://sequelize.org/v5/manual/hooks.html
+sequelize model methods https://sequelize.org/master/class/lib/model.js~Model.html
+sequelize query https://sequelize.org/master/manual/model-querying-basics.html#ordering
+sequelize finder https://sequelize.org/master/manual/model-querying-finders.html
+sequelize validation https://sequelize.org/master/manual/validations-and-constraints.html
+sequelize exclude https://sequelize.org/v5/manual/querying.html
+
+html input https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+html table https://www.w3schools.com/html/html_tables.asp
+
+confirm https://stackoverflow.com/questions/9139075/how-to-show-a-confirm-message-before-delete/14980867#14980867
+status error https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+
+jest https://jestjs.io/docs/using-matchers
+supertest https://www.npmjs.com/package/supertest
+
+CLIENT SIDE
+1. vue create, pilih fitur router, vuex, babel, linter
+2. pindah folder, install axios, install swal kalo butuh, npm run serve buat jalanin
+3. buat jsconfig.json
+4. install axios di store
+5. jgn lupa import mapState, mapMutations, mapActions kalo butuh pake
+6. action async await kalo butuh tunggu
+7. utk ubah state pake mutations
+8. di actions ada context di mutations state
+9. mapmutations mapactions di methods, mapstate di computed
+10. jgn lupa prevent klo anchor link ato submit form
+
+vue cli https://cli.vuejs.org/
+vuex https://vuex.vuejs.org/guide/state.html
+vue router https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
+vue components https://vuejs.org/v2/guide/components.html
+
+vue navigation https://router.vuejs.org/guide/essentials/navigation.html
+
+vue lifecycle https://vuejs.org/v2/guide/instance.html
+vue v for https://vuejs.org/v2/guide/list.html
+
+form data https://stackoverflow.com/questions/49587831/how-to-append-files-and-data-to-formdata-in-vue-js
+
+axios https://github.com/axios/axios
+axios headers https://flaviocopes.com/axios-send-authorization-header/
+
+sweet alert https://sweetalert2.github.io/
+npm run lint -- --fix
+sequelize --env=test db:create

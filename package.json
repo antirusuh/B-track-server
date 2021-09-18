@@ -4,7 +4,9 @@
   "description": "B-Track is a financial management application to manage budgeting and expenses for your company or team.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon bin/www",
+    "start": "node bin/www",
+    "test": "jest --detectOpenHandles --forceExit --coverage"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "jest": "^27.2.0",
     "supertest": "^6.1.6"
   }
