@@ -1,0 +1,35 @@
+{
+  "name": "B-track-server",
+  "version": "1.0.0",
+  "description": "B-Track is a financial management application to manage budgeting and expenses for your company or team.",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon bin/www",
+    "start": "node bin/www",
+    "test": "jest --detectOpenHandles --forceExit --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edwinsenjaya/B-track-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edwinsenjaya/B-track-server/issues"
+  },
+  "homepage": "https://github.com/edwinsenjaya/B-track-server#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.1",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "jest": "^27.2.0",
+    "supertest": "^6.1.6"
+  }
+}
