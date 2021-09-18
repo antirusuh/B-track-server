@@ -33,6 +33,14 @@ const errorHandler = function (err, req, res, next) {
       message = "Invalid Token";
       code = 401;
       break;
+    case "MulterError":
+      message = "Size too large, minimal size is 255kb";
+      code = 400;
+      break;
+    case "TypeError":
+      message = err.message;
+      code = 400;
+      break;
     default:
       message = "Internal Server Error";
       code = 500;
