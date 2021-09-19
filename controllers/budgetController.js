@@ -1,4 +1,10 @@
-const { Transaction, Budget, User, Department } = require("../models");
+const {
+  Transaction,
+  Budget,
+  User,
+  Department,
+  Category,
+} = require("../models");
 
 class BudgetController {
   static async getAll(_, res, next) {
@@ -37,32 +43,29 @@ class BudgetController {
     }
   }
 
-  static async getTransactionByBudget(req, res, next) {
+  static async getBudgetDetails(req, res, next) {
     const budgetId = req.params.id;
     try {
-      const transactionData = await Transaction.findAll({
-        where: {
-          BudgetId: budgetId,
-        },
+      const budgetDetails = await Budget.findByPk(budgetId, {
         include: [
           {
-            model: Category,
+            model: Department,
           },
           {
-            model: Budget,
-            include: {
-              model: Department,
-            },
-          },
-          {
-            model: User,
+            model: Transaction,
+            include: [
+              {
+                model: Category,
+              },
+              { model: User },
+            ],
           },
         ],
       });
 
-      if (!transactionData) throw { name: "NotFound" };
+      if (!budgetDetails) throw { name: "NotFound" };
 
-      res.status(200).json(transactionData);
+      res.status(200).json(budgetDetails);
     } catch (err) {
       next(err);
     }
