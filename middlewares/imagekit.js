@@ -15,7 +15,7 @@ const imagekit = (req, res, next) => {
 
   axios({
     method: "post",
-    url: process.env.IMG_KIT_URL,
+    url: "https://upload.imagekit.io/api/v1/files/upload",
     data: form,
     headers: {
       ...form.getHeaders(),
