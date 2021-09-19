@@ -4,10 +4,11 @@ const BudgetController = require("../controllers/budgetController");
 const authentication = require("../middlewares/authentication");
 const authzManagerDepartment = require("../middlewares/authzManagerDepartment");
 const authzManagerFinance = require("../middlewares/authzManagerFinance");
+const authzFinance = require("../middlewares/authzFinance");
 
 router.use(authentication);
 
-router.get("/", BudgetController.getAll);
+router.get("/", authzFinance, BudgetController.getAll);
 
 router.get("/department/:id", BudgetController.getByDepartment);
 
