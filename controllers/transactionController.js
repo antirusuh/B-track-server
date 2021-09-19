@@ -1,4 +1,4 @@
-const { Transaction } = require("../models");
+const { Transaction, Budget } = require("../models");
 
 class TransactionController {
   static async create(req, res, next) {
@@ -6,6 +6,7 @@ class TransactionController {
       const { budgetId } = req.params;
       const userId = req.user.id;
       const { name, date, amount, invoice, CategoryId } = req.body;
+      const budgetData = await Budget.findByPk(budgetId);
       const transactionData = {
         name,
         date,
@@ -16,6 +17,13 @@ class TransactionController {
         CategoryId,
       };
       const data = await Transaction.create(transactionData);
+      await Budget.update(
+        {
+          ...budgetData,
+          amount: budgetData.amount - amount,
+        },
+        { where: { id: budgetId } }
+      );
       res.status(201).json(data);
     } catch (err) {
       next(err);
