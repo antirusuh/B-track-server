@@ -170,8 +170,7 @@ describe('POST /register [ERROR CASE]', () => {
             .then(({ status, body }) => {
                 expect(status).toBe(422)
                 expect(body).toHaveProperty('message')
-                expect(body.message).toHaveLength(1)
-                expect(body.message[0]).toMatch('Email already exist')
+                expect(body.message).toMatch('Username or email already registered')
                 expect(body).not.toHaveProperty('id')
                 expect(body).not.toHaveProperty('email')
                 expect(body).not.toHaveProperty('username')
@@ -404,9 +403,8 @@ describe('POST /login [ERROR CASE]', () => {
             .send(wrongEmailData)
             .then(({ status, body }) => {
                 expect(status).toBe(401)
-                expect(body).toHaveProperty('message', expect.any(Array))
-                expect(body.message).toHaveLength(1)
-                expect(body.message[0]).toMatch('Invalid email/password')
+                expect(body).toHaveProperty('message', expect.any(String))
+                expect(body.message).toMatch('Invalid email/password')
                 expect(body).not.toHaveProperty('access_token')
                 expect(body).not.toHaveProperty('username')
                 expect(body).not.toHaveProperty('role')
@@ -427,9 +425,8 @@ describe('POST /login [ERROR CASE]', () => {
             .send(wrongPasswordLoginData)
             .then(({ status, body }) => {
                 expect(status).toBe(401)
-                expect(body).toHaveProperty('message', expect.any(Array))
-                expect(body.message).toHaveLength(1)
-                expect(body.message[0]).toMatch('Invalid email/password')
+                expect(body).toHaveProperty('message', expect.any(String))
+                expect(body.message).toMatch('Invalid email/password')
                 expect(body).not.toHaveProperty('access_token')
                 expect(body).not.toHaveProperty('username')
                 expect(body).not.toHaveProperty('role')

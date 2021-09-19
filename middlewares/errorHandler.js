@@ -5,35 +5,36 @@ const errorHandler = function (err, req, res, next) {
 
   switch (name) {
     case "SequelizeValidationError":
-      err.errors.map((el) => message.push(el.message));
+      const errors = err.errors.map((el) => el.message);
+      message = errors;
       code = 400;
       break;
     case "SequelizeUniqueConstraintError":
-      err.errors.map((el) => message.push(el.message));
+      message = "Username or email already registered";
       code = 422;
       break;
     case "NotFound":
-      message.push(err.message)
+      message = "Data not found";
       code = 404;
       break;
     case "InvalidToken":
-      message.push(err.message)
+      message = "Please log in first";
       code = 401;
       break;
     case "NotAuthorized":
-      message.push(err.message)
+      message = "You are not authorized";
       code = 403;
       break;
     case "Incorrect":
-      message.push(err.message)
+      message = "Email or password incorrect";
       code = 400;
       break;
     case "Unauthorized":
-      message.push(err.message)
+      message = "Invalid email/password"
       code = 401;
       break;
     default:
-      message.push(err.message)
+      message = "Internal Server Error";
       code = 500;
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1631979498824" clover="3.2.0">
-  <project timestamp="1631979498824" name="All files">
-    <metrics statements="152" coveredstatements="135" conditionals="21" coveredconditionals="13" methods="24" coveredmethods="22" elements="197" coveredelements="170" complexity="0" loc="152" ncloc="152" packages="6" files="17" classes="17"/>
+<coverage generated="1632021547742" clover="3.2.0">
+  <project timestamp="1632021547742" name="All files">
+    <metrics statements="153" coveredstatements="136" conditionals="21" coveredconditionals="13" methods="23" coveredmethods="21" elements="197" coveredelements="170" complexity="0" loc="153" ncloc="153" packages="6" files="17" classes="17"/>
     <package name="B-track-server">
       <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="app.js" path="/home/rizal/hacktiv8P3/B-track-server/app.js">
@@ -77,9 +77,9 @@
       </file>
     </package>
     <package name="B-track-server.middlewares">
-      <metrics statements="30" coveredstatements="16" conditionals="8" coveredconditionals="3" methods="3" coveredmethods="3"/>
+      <metrics statements="31" coveredstatements="17" conditionals="8" coveredconditionals="3" methods="2" coveredmethods="2"/>
       <file name="errorHandler.js" path="/home/rizal/hacktiv8P3/B-track-server/middlewares/errorHandler.js">
-        <metrics statements="30" coveredstatements="16" conditionals="8" coveredconditionals="3" methods="3" coveredmethods="3"/>
+        <metrics statements="31" coveredstatements="17" conditionals="8" coveredconditionals="3" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="13" type="stmt"/>
         <line num="3" count="13" type="stmt"/>
@@ -88,28 +88,29 @@
         <line num="8" count="12" type="stmt"/>
         <line num="9" count="10" type="stmt"/>
         <line num="10" count="10" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
+        <line num="11" count="10" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
         <line num="17" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
         <line num="21" count="0" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
         <line num="25" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
-        <line num="32" count="2" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
         <line num="33" count="2" type="stmt"/>
         <line num="34" count="2" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
         <line num="37" count="0" type="stmt"/>
-        <line num="40" count="13" type="stmt"/>
-        <line num="43" count="1" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="41" count="13" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
       </file>
     </package>
     <package name="B-track-server.models">

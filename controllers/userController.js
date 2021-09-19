@@ -48,7 +48,9 @@ class UserController {
                 } else {
                     const payload = {
                         id: user.id,
+                        username: user.username,
                         role: user.role,
+                        DepartmentId: user.DepartmentId
                     }
 
                     const access_token = createToken(payload)
