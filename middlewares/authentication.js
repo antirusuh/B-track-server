@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Department } = require('../models');
 const { verifyToken } = require('../helpers/jsonwebtoken');
 
 async function authentication(req, res, next) {
@@ -10,6 +10,10 @@ async function authentication(req, res, next) {
         const user = await User.findOne({
             where: {
                 id
+            },
+            include: {
+                model: Department,
+                attributes: ['name']
             }
         })
 
@@ -22,7 +26,7 @@ async function authentication(req, res, next) {
                 id: user.id,
                 username: user.username,
                 role: user.role,
-                DepartmentId: user.DepartmentId
+                department: user.Department.name
             }
             next()
         }

@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Department } = require('../models');
 const { createToken } = require('../helpers/jsonwebtoken');
 const { checkPassword } = require('../helpers/bcrypt');
 
@@ -33,6 +33,10 @@ class UserController {
             const user = await User.findOne({
                 where: {
                     email
+                },
+                include: {
+                    model: Department,
+                    attributes: ['name']
                 }
             })
             const invalid = {
@@ -50,7 +54,7 @@ class UserController {
                         id: user.id,
                         username: user.username,
                         role: user.role,
-                        DepartmentId: user.DepartmentId
+                        department: user.Department.name
                     }
 
                     const access_token = createToken(payload)
@@ -58,7 +62,8 @@ class UserController {
                     res.status(200).json({
                         access_token,
                         username: user.username,
-                        role: user.role
+                        role: user.role,
+                        department: user.Department.name
                     })
                 }
             }
