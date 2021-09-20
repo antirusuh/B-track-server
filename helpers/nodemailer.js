@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const smtpTransport = require("nodemailer-smtp-transport");
+var smtpTransport = require("nodemailer-smtp-transport");
 
 async function sendMail(email, subject, text, html) {
   const transporter = nodemailer.createTransport(
@@ -7,8 +7,8 @@ async function sendMail(email, subject, text, html) {
       service: "gmail",
       host: "smtp.gmail.com",
       auth: {
-        user: "extracnodemailer@gmail.com",
-        pass: "edwin123.",
+        user: "b.track.no.reply@gmail.com",
+        pass: "hacktiv8",
       },
     })
   );
@@ -24,12 +24,14 @@ async function sendMail(email, subject, text, html) {
   console.log("Email sent");
 
   /*
+  Send mail format example:
+
   sendMail(
-        data.email,
-        "Welcome! 🎊",
-        "Thank you for joining ExTrac!",
-        "<h1>Thank you for joining ExTrac!</h1>"
-      );
+    "recipient@mail.com",
+    "Welcome! 🎊",
+    "Welcome to our application!",
+    "<h1>Thank you for joining!</h1>"
+  );
   */
 }
 
