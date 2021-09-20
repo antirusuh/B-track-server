@@ -1,7 +1,7 @@
 const errorHandler = function (err, req, res, next) {
   let name = err.name;
   let code = err.code;
-  let message = [];
+  let message = err.message;
 
   switch (name) {
     case "SequelizeValidationError":
@@ -34,6 +34,7 @@ const errorHandler = function (err, req, res, next) {
       code = 401;
       break;
     default:
+      console.log(err);
       message = "Internal Server Error";
       code = 500;
   }
