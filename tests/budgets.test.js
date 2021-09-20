@@ -471,30 +471,30 @@ describe("DELETE /budgets/:id", () => {
       });
   });
 
-  // test("[FAILED] Should return error message, status code 401", (done) => {
-  //   request(app)
-  //     .delete("/budgets/1")
-  //     .then((response) => {
-  //       expect(response.status).toBe(401);
-  //       expect(response.body).toHaveProperty("message", "unauthorized");
-  //       done();
-  //     })
-  //     .catch((err) => {
-  //       done(err);
-  //     });
-  // });
+  test("[FAILED] Should return error message, status code 401", (done) => {
+    request(app)
+      .delete(`/budgets/${budgetDummy.id}`)
+      .then((response) => {
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty("message", expect.any(String));
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 
-  // test("[FAILED] Should return error message, status code 404", (done) => {
-  //   request(app)
-  //     .delete("/budgets/1")
-  //     .set("access_token", access_token)
-  //     .then((response) => {
-  //       expect(response.status).toBe(404);
-  //       expect(response.body).toHaveProperty("message", "notFound");
-  //       done();
-  //     })
-  //     .catch((err) => {
-  //       done(err);
-  //     });
-  // });
+  test("[FAILED] Should return error message, status code 404", (done) => {
+    request(app)
+      .delete("/budgets/456677")
+      .set("access_token", access_token2)
+      .then((response) => {
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty("message", expect.any(String));
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 });
