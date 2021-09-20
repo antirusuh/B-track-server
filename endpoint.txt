@@ -1,0 +1,22 @@
+endpoint b-track
+
+USER
+
+POST /login
+POST /register
+
+BUDGET
+
+GET	/budgets 		=> get all budget
+GET	/budgets/:departmentId	=> Get budget by departmen
+GET	/budgets/:id		=> Detail budget
+POST	/budgets		=> request budget dari manager department
+PUT	/budgets/:id		=> edit amount dan status
+DELETE	/budgets/:id
+
+TRANSACTION
+
+POST	/transactions/:budgetId
+PUT	/transactions/:id
+DELETE	/transactions/:id
+
