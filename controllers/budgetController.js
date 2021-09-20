@@ -1,3 +1,4 @@
+const sendMail = require("../helpers/nodemailer");
 const {
   Transaction,
   Budget,
@@ -62,7 +63,6 @@ class BudgetController {
           },
         ],
       });
-
       if (!budgetDetails) throw { name: "NotFound" };
 
       res.status(200).json(budgetDetails);
@@ -73,16 +73,17 @@ class BudgetController {
 
   static async createBudget(req, res, next) {
     const { name, amount, date, due_date } = req.body;
-    const { departmentId } = req.user;
+    const { DepartmentId } = req.user;
 
     try {
       const requestedBudget = await Budget.create({
         name,
         amount,
+        initial_amount: amount,
         date,
         due_date,
         status: "Unapproved",
-        DepartmentId: departmentId,
+        DepartmentId,
       });
 
       res.status(201).json(requestedBudget);
@@ -110,7 +111,11 @@ class BudgetController {
         }
       );
 
-      res.status(204).json(editedBudget);
+      if (status === "Approved") {
+        sendMail();
+      }
+
+      res.status(200).json(editedBudget[1][0].dataValues);
     } catch (err) {
       next(err);
     }

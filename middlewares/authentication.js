@@ -4,6 +4,8 @@ const { verifyToken } = require("../helpers/jsonwebtoken");
 async function authentication(req, res, next) {
   const { access_token } = req.headers;
 
+  if (!access_token) throw { name: "InvalidToken" };
+
   try {
     let { id } = verifyToken(access_token);
 
