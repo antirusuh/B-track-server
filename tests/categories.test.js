@@ -1,74 +1,63 @@
-const app = require("../app");
-const request = require("supertest");
-const { Department, User, sequelize } = require("../models");
-const { queryInterface } = sequelize;
-const { createToken } = require("../helpers/jsonwebtoken");
+const request = require('supertest');
+const { test, describe, expect, beforeAll, afterAll } = require('@jest/globals');
 
-let access_token;
+const app = require('../app');
+const { Category, sequelize } = require('../models');
 
-let userData = {
-  username: "usertest",
-  email: "usertest@mail.com",
-  password: "12345",
-  role: "staff",
-  DepartmentId: "",
-};
+const { queryInterface } = sequelize
 
 beforeAll((done) => {
-  Department.create({ name: "Test" })
-    .then((department) => {
-      userData.DepartmentId = department.id;
-      return User.create(userData);
-    })
-    .then((user) => {
-      access_token = createToken({ id: user.id, email: user.email });
-      done();
+    queryInterface.bulkInsert('Categories', [
+        {
+            name: 'Category 1',
+            createdAt: new Date(),
+            updatedAt: new Date ()
+        },
+        {
+            name: 'Category 2',
+            createdAt: new Date(),
+            updatedAt: new Date ()
+        },
+        {
+            name: 'Category 3',
+            createdAt: new Date(),
+            updatedAt: new Date ()
+        },
+    ])
+    .then(() => {
+        done()
+    }).catch((err) => {
+        done(err)
     });
-});
+})
 
 afterAll((done) => {
-  queryInterface
-    .bulkDelete("Departments", {})
-    .then(() => {
-      return queryInterface.bulkDelete("Users", {});
-    })
-    .then(() => {
-      queryInterface.bulkDelete("Categories", {});
-      done();
-    })
-    .catch((err) => done(err));
-});
-
-describe("Category Route Test", () => {
-  describe("GET /categories", () => {
-    test("200 Success get categories", (done) => {
-      request(app)
-        .get("/categories")
-        .set("Accept", "application/json")
-        .set("access_token", access_token)
-        .then((res) => {
-          const { body, status } = res;
-          expect(status).toBe(200);
-          expect(Array.isArray(body)).toBeTruthy();
-          done();
-        })
-        .catch((err) => {
-          done(err);
+    queryInterface
+        .bulkDelete('Categories', {})
+        .then(() => {
+            done()
+        }).catch((err) => {
+            done(err)
         });
-    });
+})
 
-    test("401 without token", (done) => {
-      request(app)
-        .get("/categories")
-        .set("Accept", "application/json")
-        .then((res) => {
-          const { body, status } = res;
 
-          expect(status).toBe(401);
-          expect(body).toHaveProperty("message", expect.any(String));
-          done();
-        })
-        .catch((err) => done(err));
-    });
-  });
-});
+
+describe('GET /categories [SUCCESS CASE]', () => {
+    test('should return array of object with id and name | Status code 200', (done) => {
+        request(app)
+            .get('/categories')
+            .set('Accept', 'application/json')
+            .then(({ status, body }) => {
+                expect(status).toBe(200)
+                expect(body).toHaveLength(3)
+                expect(body[0]).toHaveProperty('id', expect.any(Number))
+                expect(body[0]).toHaveProperty('name', expect.any(String))
+                // expect(body).toHaveProperty('id', expect.any(Number))
+                // expect(body).toHaveProperty('name', expect.any(String))
+                done()
+            }).catch((err) => {
+                done(err)
+            });
+    })
+})
