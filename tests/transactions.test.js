@@ -103,8 +103,8 @@ describe("Transaction Route Test", () => {
       };
       request(app)
         .post(`/transactions/${budgetData.id}`)
-        .set("access_token", userToken2)
         .set("Accept", "application/json")
+        .set("access_token", userToken2)
         .send(inputTransaction)
         .then((res) => {
           const { body, status } = res;
@@ -286,6 +286,7 @@ describe("Transaction Route Test", () => {
     test("404 Transaction Not Found", (done) => {
       request(app)
         .put(`/transactions/456`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .then((res) => {
           const { body, status } = res;
@@ -302,6 +303,7 @@ describe("Transaction Route Test", () => {
     test("200 Success Delete Transaction", (done) => {
       request(app)
         .delete(`/transactions/${transactionDummy.id}`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .end((err, res) => {
           if (err) return done(err);
@@ -317,11 +319,11 @@ describe("Transaction Route Test", () => {
       const invalidParams = 8997854;
       request(app)
         .delete(`/transactions/${invalidParams}`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .end((err, res) => {
           if (err) return done(err);
           const { body, status } = res;
-
           expect(status).toBe(404);
           expect(body).toHaveProperty("message", expect.any(String));
           return done();

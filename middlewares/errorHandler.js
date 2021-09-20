@@ -43,10 +43,10 @@ const errorHandler = function (err, req, res, next) {
       code = 400;
       break;
     case "Unauthorized":
-      message = "Invalid email/password"
+      message = "Invalid email/password";
       code = 401;
       break;
-      
+
     default:
       console.log(err);
       message = "Internal Server Error";
