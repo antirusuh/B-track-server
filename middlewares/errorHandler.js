@@ -1,7 +1,7 @@
 const errorHandler = function (err, req, res, next) {
   let name = err.name;
   let code = err.code;
-  let message = err.message;
+  let message = [];
 
   switch (name) {
     case "SequelizeValidationError":
@@ -28,6 +28,10 @@ const errorHandler = function (err, req, res, next) {
     case "Incorrect":
       message = "Email or password incorrect";
       code = 400;
+      break;
+    case "Unauthorized":
+      message = "Invalid email/password"
+      code = 401;
       break;
     default:
       message = "Internal Server Error";
