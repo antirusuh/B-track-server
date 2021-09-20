@@ -27,6 +27,8 @@ class BudgetController {
   static async getByDepartment(req, res, next) {
     const departmentId = req.params.id;
     try {
+      const findDepartment = await Department.findByPk(departmentId);
+      if (!findDepartment) throw { name: "NotFound" };
       const budgetData = await Budget.findAll({
         where: {
           DepartmentId: departmentId,
