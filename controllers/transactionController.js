@@ -1,6 +1,17 @@
 const { Transaction, Budget } = require("../models");
 
 class TransactionController {
+  static async findOne(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await Transaction.findByPk(id);
+      if (!data) throw { name: "NotFound" };
+      res.status(200).json(data);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async create(req, res, next) {
     try {
       const { budgetId } = req.params;
