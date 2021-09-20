@@ -125,7 +125,6 @@ class BudgetController {
 
   static async deleteBudget(req, res, next) {
     const budgetId = req.params.id;
-
     try {
       const dataExist = await Budget.findByPk(budgetId);
 
