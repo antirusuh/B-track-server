@@ -24,6 +24,7 @@ async function authentication(req, res, next) {
         role: user.role,
         DepartmentId: user.DepartmentId,
       };
+
       next();
     }
   } catch (err) {

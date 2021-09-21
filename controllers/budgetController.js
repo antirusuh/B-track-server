@@ -48,6 +48,7 @@ class BudgetController {
 
   static async getBudgetDetails(req, res, next) {
     const budgetId = req.params.id;
+    console.log(budgetId, "ID");
     try {
       const budgetDetails = await Budget.findByPk(budgetId, {
         include: [
@@ -76,6 +77,9 @@ class BudgetController {
   static async createBudget(req, res, next) {
     const { name, amount, date, due_date } = req.body;
     const { DepartmentId } = req.user;
+    const managerFinance = await User.findOne({
+      where: { role: "manager_finance" },
+    });
 
     try {
       const requestedBudget = await Budget.create({
@@ -87,6 +91,22 @@ class BudgetController {
         status: "Unapproved",
         DepartmentId,
       });
+
+      const user = await User.findByPk(req.user.id, {
+        include: [{ model: Department }],
+      });
+
+      await sendMail(
+        managerFinance.email,
+        `New budget request`,
+        `New budget request`,
+        `<h1>Employee with username: ${user.username} from ${user.Department.name} Department just requested a new budget</h1>
+        <h2>Budget Name: ${name}<h2/>
+        <h2>Amount: Rp ${amount}<h2/>
+        <h2>Date: ${date}<h2/>
+        <h2>Due Date: ${due_date}<h2/>
+        `
+      );
 
       res.status(201).json(requestedBudget);
     } catch (err) {
@@ -112,10 +132,6 @@ class BudgetController {
           returning: true,
         }
       );
-
-      if (status === "Approved") {
-        sendMail();
-      }
 
       res.status(200).json(editedBudget[1][0].dataValues);
     } catch (err) {
