@@ -103,8 +103,8 @@ describe("Transaction Route Test", () => {
       };
       request(app)
         .post(`/transactions/${budgetData.id}`)
-        .set("access_token", userToken2)
         .set("Accept", "application/json")
+        .set("access_token", userToken2)
         .send(inputTransaction)
         .then((res) => {
           const { body, status } = res;
@@ -185,6 +185,69 @@ describe("Transaction Route Test", () => {
           return done();
         })
         .catch((err) => done(err));
+    });
+  });
+
+  describe("GET /transactions/:id", () => {
+    test("200 success get transactions by id", (done) => {
+      request(app)
+        .get(`/transactions/${transactionDummy.id}`)
+        .set("Accept", "application/js")
+        .set("access_token", userToken2)
+        .then((res) => {
+          const { status, body } = res;
+
+          expect(status).toBe(200);
+          expect(body).toHaveProperty("id", expect.any(Number));
+          expect(body).toHaveProperty("name", expect.any(String));
+          expect(body).toHaveProperty("date", expect.anything());
+          expect(body).toHaveProperty("amount", expect.any(Number));
+          expect(body).toHaveProperty("BudgetId", budgetData.id);
+          expect(body).toHaveProperty("CategoryId", categoryData.id);
+          expect(body).toHaveProperty("UserId", userData.id);
+          done();
+        });
+    });
+
+    test("401 without token", (done) => {
+      request(app)
+        .get(`/transactions/${transactionDummy.id}`)
+        .set("Accept", "application/js")
+        .then((res) => {
+          const { status, body } = res;
+
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", expect.any(String));
+          done();
+        });
+    });
+
+    test("401 invalid token", (done) => {
+      request(app)
+        .get(`/transactions/${transactionDummy.id}`)
+        .set("Accept", "application/js")
+        .set("access_token", invalidToken)
+        .then((res) => {
+          const { status, body } = res;
+
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", expect.any(String));
+          done();
+        });
+    });
+
+    test("404 Not Found", (done) => {
+      request(app)
+        .get(`/transactions/4567678`)
+        .set("Accept", "application/js")
+        .set("access_token", userToken2)
+        .then((res) => {
+          const { status, body } = res;
+
+          expect(status).toBe(404);
+          expect(body).toHaveProperty("message", expect.any(String));
+          done();
+        });
     });
   });
 
@@ -286,6 +349,7 @@ describe("Transaction Route Test", () => {
     test("404 Transaction Not Found", (done) => {
       request(app)
         .put(`/transactions/456`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .then((res) => {
           const { body, status } = res;
@@ -302,6 +366,7 @@ describe("Transaction Route Test", () => {
     test("200 Success Delete Transaction", (done) => {
       request(app)
         .delete(`/transactions/${transactionDummy.id}`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .end((err, res) => {
           if (err) return done(err);
@@ -317,11 +382,11 @@ describe("Transaction Route Test", () => {
       const invalidParams = 8997854;
       request(app)
         .delete(`/transactions/${invalidParams}`)
+        .set("Accept", "application/json")
         .set("access_token", userToken2)
         .end((err, res) => {
           if (err) return done(err);
           const { body, status } = res;
-
           expect(status).toBe(404);
           expect(body).toHaveProperty("message", expect.any(String));
           return done();

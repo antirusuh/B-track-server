@@ -3,7 +3,6 @@ const imageKitAPI = require('../apis/imageKit');
 
 async function uploadToImagekit(req, res, next) {
     try {
-        console.log(req.file);
         const file = req.file.buffer.toString('base64')
         const fileName = req.file.originalname
 

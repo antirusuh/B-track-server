@@ -6,6 +6,7 @@ const authentication = require("../middlewares/authentication");
 
 router.use(authentication);
 router.post("/:budgetId", TransactionController.create);
+router.get("/:id", TransactionController.findOne);
 router.put("/:id", TransactionController.update);
 router.delete("/:id", TransactionController.delete);
 

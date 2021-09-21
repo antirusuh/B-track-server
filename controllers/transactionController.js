@@ -1,8 +1,22 @@
 const sendMail = require("../helpers/nodemailer");
-const { Transaction, Budget, User } = require("../models");
 const { format } = require("date-fns");
 
+const { Transaction, Budget, User, Category } = require("../models");
+
 class TransactionController {
+  static async findOne(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await Transaction.findByPk(id, {
+        include: [User, Budget, Category],
+      });
+      if (!data) throw { name: "NotFound" };
+      res.status(200).json(data);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async create(req, res, next) {
     try {
       const { budgetId } = req.params;

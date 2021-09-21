@@ -3,6 +3,8 @@ const errorHandler = function (err, req, res, next) {
   let code = err.code;
   let message = err.message;
 
+  // console.log(err);
+
   switch (name) {
     case "SequelizeValidationError":
       const errors = err.errors.map((el) => el.message);
@@ -25,30 +27,29 @@ const errorHandler = function (err, req, res, next) {
       message = "You are not authorized";
       code = 403;
       break;
-    case "Incorrect":
-      message = "Email or password incorrect";
-      code = 400;
-      break;
+    // case "Incorrect":
+    //   message = "Email or password incorrect";
+    //   code = 400;
+    //   break;
 
     case "JsonWebTokenError":
       message = "Invalid Token";
       code = 401;
       break;
-    case "MulterError":
-      message = "Size too large, minimal size is 255kb";
-      code = 400;
-      break;
+    // case "MulterError":
+    //   message = "Size too large, minimal size is 255kb";
+    //   code = 400;
+    //   break;
     case "TypeError":
       message = err.message;
       code = 400;
       break;
     case "Unauthorized":
-      message = "Invalid email/password"
+      message = "Invalid email/password";
       code = 401;
       break;
-      
+
     default:
-      console.log(err);
       message = "Internal Server Error";
       code = 500;
   }
