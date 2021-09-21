@@ -1,5 +1,6 @@
 const sendMail = require("../helpers/nodemailer");
 const { Transaction, Budget, User } = require("../models");
+const { format } = require("date-fns");
 
 class TransactionController {
   static async create(req, res, next) {
@@ -52,8 +53,9 @@ class TransactionController {
           <br/>
           <p>An employee with username: ${
             req.user.username
-          } just make a transaction for ${name} of Rp ${amount} at ${new Date(
-            "1 Jan 2000"
+          } just make a transaction for ${name} of Rp ${amount} at ${format(
+            new Date(),
+            "yyyy-MM-dd"
           )}</p>
           `
         );
@@ -91,6 +93,8 @@ class TransactionController {
       const { id } = req.params;
       const userId = req.user.id;
       const found = await Transaction.findByPk(id);
+      const budgetData = await Budget.findByPk(Transaction.BudgetId);
+
       if (!found) {
         throw { name: "NotFound" };
       } else {
@@ -104,8 +108,65 @@ class TransactionController {
           UserId: userId,
           CategoryId,
         };
-        await Transaction.update(transactionData, { where: { id } });
-        res.status(200).json({ message: `Update success for ID ${id}` });
+
+        if (amount > Transaction.amount) {
+          if (budgetData.amount - (amount - Transaction.amount) < 0) {
+            res.status(400).json({ message: "Out of budget" });
+          } else if (
+            budgetData.amount -
+              (amount - Transaction.amount) / budgetData.initial_amount <=
+            0.2
+          ) {
+            await Transaction.update(transactionData, { where: { id } });
+            const updatedBudget = await Budget.update(
+              {
+                ...budgetData,
+                amount: budgetData.amount - (amount - Transaction.amount),
+              },
+              { where: { id: budgetData.id }, returning: true }
+            );
+
+            await sendMail(
+              managerDept.email,
+              `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
+              `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
+              `<h1>Current budget for ${updatedBudget.name} is Rp ${
+                updatedBudget.amount
+              } (${
+                (updatedBudget.amount / updatedBudget.initial_amount) * 100
+              }% left)</h1>
+              <br/>
+              <p>An employee with username: ${
+                req.user.username
+              } just make a transaction for ${name} of Rp ${amount} at ${format(
+                new Date(),
+                "yyyy-MM-dd"
+              )}</p>
+              `
+            );
+            res.status(200).json({ message: `Update success for ID ${id}` });
+          } else {
+            await Transaction.update(transactionData, { where: { id } });
+
+            await Budget.update(
+              {
+                ...budgetData,
+                amount: budgetData.amount - (amount - Transaction.amount),
+              },
+              { where: { id: budgetData.id } }
+            );
+
+            res.status(200).json({ message: `Update success for ID ${id}` });
+          }
+        } else {
+          await Budget.update(
+            {
+              ...budgetData,
+              amount: budgetData.amount + (Transaction.amount - amount),
+            },
+            { where: { id: budgetData.id } }
+          );
+        }
       }
     } catch (err) {
       next(err);
