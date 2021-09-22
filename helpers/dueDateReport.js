@@ -10,7 +10,7 @@ const idrCurrency = (number) => {
   }).format(number);
 };
 
-const aWeekLeftReminder = function () {
+const dueDateReport = function () {
   // scheduled for 10.00 am every day (GMT+7)
   cron.schedule("0 3 * * *", async () => {
     console.log("running cron");
@@ -20,7 +20,7 @@ const aWeekLeftReminder = function () {
       });
       const filtered = allBudgets.filter((el) => el.status === "Approved");
       filtered.forEach((el) => {
-        if (el.due_date - new Date() <= 604800000) {
+        if (el.due_date <= new Date()) {
           const manager = User.findOne({
             where: {
               DepartmentId: el.DepartmentId,
@@ -33,18 +33,11 @@ const aWeekLeftReminder = function () {
             `Budget Summary Report - ${el.name}`,
             `Budget Summary Report - ${el.name}`,
             `<div>
-            <img src="../logo/logo_biru.png" alt="..."/>
             <h1>There is ${idrCurrency(el.amount)} left (${
               (el.amount / el.initial_amount) * 100
             }% of total budget)</h1>
-            <h2>There are less than one week left to due date (${format(
-              new Date(el.due_date),
-              "d MMMM y"
-            )})</h2>
             <ul  style= "font-size: 20px;" >
-              <li>Currently there are ${
-                el.Transactions.length
-              } transactions</li>
+              <li>There are ${el.Transactions.length} transactions</li>
               <li>Total spending: ${idrCurrency(
                 el.initial_amount - el.amount
               )}</li>
@@ -69,4 +62,4 @@ const aWeekLeftReminder = function () {
   });
 };
 
-module.exports = aWeekLeftReminder;
+module.exports = dueDateReport;

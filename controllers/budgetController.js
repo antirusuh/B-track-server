@@ -1,4 +1,12 @@
 const sendMail = require("../helpers/nodemailer");
+const { format } = require("date-fns");
+
+const idrCurrency = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+};
 const {
   Transaction,
   Budget,
@@ -96,15 +104,19 @@ class BudgetController {
         include: [{ model: Department }],
       });
 
-      await sendMail(
+      sendMail(
         managerFinance.email,
-        `New budget request`,
-        `New budget request`,
-        `<h1>Employee with username: ${user.username} from ${user.Department.name} Department just requested a new budget</h1>
-        <h2>Budget Name: ${name}<h2/>
-        <h2>Amount: Rp ${amount}<h2/>
-        <h2>Date: ${date}<h2/>
-        <h2>Due Date: ${due_date}<h2/>
+        `New Budget Request`,
+        `New Budget Request`,
+        `<h1>Employee with username: ${user.username} from ${
+          user.Department.name
+        } Department just requested a new budget</h1>
+        <ul>
+          <li>Budget Name: ${name}<li/>
+          <li>Amount: ${idrCurrency(amount)}<li/>
+          <li>Date: ${format(new Date(date), "d MMMM y")}<li/>
+          <li>Due Date: ${format(new Date(due_date), "d MMMM y")}<li/>
+        <ul/>
         `
       );
 
@@ -119,7 +131,7 @@ class BudgetController {
     const budgetId = req.params.id;
 
     try {
-      const editedBudget = await Budget.update(
+      let editedBudget = await Budget.update(
         {
           amount,
           initial_amount: amount,
@@ -133,7 +145,46 @@ class BudgetController {
         }
       );
 
-      res.status(200).json(editedBudget[1][0].dataValues);
+      editedBudget = editedBudget[1][0];
+
+      const managerDepartment = User.findOne({
+        where: { DepartmentId: editedBudget.DepartmentId },
+      });
+
+      if (status === "Approved") {
+        sendMail(
+          managerDepartment.email,
+          `Budget request has been approved - ${editedBudget.name}`,
+          `Budget request has been approved - ${editedBudget.name}`,
+          `<h1>Your requested budget has been approved from the finance department</h1>
+          <ul>
+          <li>Budget Name: ${editedBudget.name}<li/>
+          <li>Amount: Rp ${idrCurrency(editedBudget.amount)}<li/>
+          <li>Date: ${format(new Date(editedBudget.date), "d MMMM y")}<li/>
+          <li>Due Date: ${format(
+            new Date(editedBudget.due_date),
+            "d MMMM y"
+          )}<li/>
+          <ul/>
+          `
+        );
+      } else if (status === "Rejected") {
+        sendMail(
+          managerDepartment.email,
+          `Budget request has been rejected - ${editedBudget.name}`,
+          `Budget request has been rejected - ${editedBudget.name}`,
+          `<h1>Your requested budget has been rejected from the finance department</h1>
+          <ul>
+          <li>Budget Name: ${editedBudget.name}<li/>
+          <li>Amount: Rp ${idrCurrency(editedBudget.amount)}<li/>
+          <li>Date: ${format(new Date(editedBudget.date))}<li/>
+          <li>Due Date: ${format(new Date(editedBudget.due_date))}<li/>
+          <ul/>
+          `
+        );
+      }
+
+      res.status(200).json(editedBudget);
     } catch (err) {
       next(err);
     }
