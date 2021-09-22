@@ -104,7 +104,7 @@ class BudgetController {
         include: [{ model: Department }],
       });
 
-      sendMail(
+      await sendMail(
         managerFinance.email,
         `New Budget Request`,
         `New Budget Request`,
@@ -147,12 +147,12 @@ class BudgetController {
 
       editedBudget = editedBudget[1][0];
 
-      const managerDepartment = User.findOne({
+      const managerDepartment = await User.findOne({
         where: { DepartmentId: editedBudget.DepartmentId },
       });
 
       if (status === "Approved") {
-        sendMail(
+        await sendMail(
           managerDepartment.email,
           `Budget request has been approved - ${editedBudget.name}`,
           `Budget request has been approved - ${editedBudget.name}`,
@@ -169,7 +169,7 @@ class BudgetController {
           `
         );
       } else if (status === "Rejected") {
-        sendMail(
+        await sendMail(
           managerDepartment.email,
           `Budget request has been rejected - ${editedBudget.name}`,
           `Budget request has been rejected - ${editedBudget.name}`,
