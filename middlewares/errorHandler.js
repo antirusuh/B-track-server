@@ -35,7 +35,6 @@ const errorHandler = function (err, req, res, next) {
       break;
 
     default:
-      console.log(err);
       message = "Internal Server Error";
       code = 500;
   }

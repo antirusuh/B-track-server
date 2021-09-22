@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const routers = require("./routes");
 const aWeekLeftReminder = require("./helpers/aWeekLeftReminder");
+const dueDateReport = require("./helpers/dueDateReport");
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(express.json());
 app.use(routers);
 
 aWeekLeftReminder();
+dueDateReport();
 
 module.exports = app;

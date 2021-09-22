@@ -1,6 +1,13 @@
 const sendMail = require("../helpers/nodemailer");
 const { format } = require("date-fns");
 
+const idrCurrency = (number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+};
+
 const { Transaction, Budget, User, Category } = require("../models");
 
 class TransactionController {
@@ -55,22 +62,21 @@ class TransactionController {
         );
         const updatedBudget = await Budget.findByPk(budgetId);
 
-        await sendMail(
+        sendMail(
           managerDept.email,
           `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
           `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
-          `<h1>Current budget for ${updatedBudget.name} is Rp ${
+          `<h1>Current budget for ${updatedBudget.name} is ${idrCurrency(
             updatedBudget.amount
-          } (${
+          )} (${
             (updatedBudget.amount / updatedBudget.initial_amount) * 100
           }% left)</h1>
           <br/>
           <p>An employee with username: ${
             req.user.username
-          } just make a transaction for ${name} of Rp ${amount} at ${format(
-            new Date(),
-            "yyyy-MM-dd"
-          )}</p>
+          } just make a transaction for ${name} of ${idrCurrency(
+            amount
+          )} on ${format(new Date(), "d MMMM y")}</p>
           `
         );
 
@@ -126,7 +132,11 @@ class TransactionController {
         if (amount > found.amount) {
           if (budgetData.amount - (amount - found.amount) < 0) {
             res.status(400).json({ message: "Out of budget" });
-          } else if ((budgetData.amount - (amount - found.amount)) / budgetData.initial_amount <= 0.2) {
+          } else if (
+            (budgetData.amount - (amount - found.amount)) /
+              budgetData.initial_amount <=
+            0.2
+          ) {
             await Transaction.update(transactionData, { where: { id } });
             const managerDept = await User.findOne({
               where: {
@@ -142,22 +152,21 @@ class TransactionController {
               { where: { id: budgetData.id }, returning: true }
             );
 
-            await sendMail(
+            sendMail(
               managerDept.email,
               `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
               `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
-              `<h1>Current budget for ${updatedBudget.name} is Rp ${
+              `<h1>Current budget for ${updatedBudget.name} is ${idrCurrency(
                 updatedBudget.amount
-              } (${
+              )} (${
                 (updatedBudget.amount / updatedBudget.initial_amount) * 100
               }% left)</h1>
               <br/>
               <p>An employee with username: ${
                 req.user.username
-              } just make a transaction for ${name} of Rp ${amount} at ${format(
-                new Date(),
-                "yyyy-MM-dd"
-              )}</p>
+              } just make a transaction for ${name} of ${idrCurrency(
+                amount
+              )} on ${format(new Date(), "d MMMM y")}</p>
               `
             );
             res.status(200).json({ message: `Update success for ID ${id}` });
@@ -196,7 +205,7 @@ class TransactionController {
       const transactionData = await Transaction.findByPk(id);
 
       if (!transactionData) {
-        throw ({ name: "NotFound" });
+        throw { name: "NotFound" };
       } else {
         const budgetData = await Budget.findByPk(transactionData.BudgetId);
         await Budget.update(
