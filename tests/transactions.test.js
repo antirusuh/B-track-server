@@ -108,7 +108,7 @@ describe("Transaction Route Test", () => {
         .send(inputTransaction)
         .then((res) => {
           const { body, status } = res;
-          // transactionData = body;          
+          // transactionData = body;
 
           expect(status).toBe(201);
           expect(body).toHaveProperty("id", expect.any(Number));

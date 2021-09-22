@@ -1,14 +1,14 @@
 {
   "development": {
     "username": "postgres",
-    "password": "822413",
-    "database": "b-track",
+    "password": "postgres",
+    "database": "b-track-dev",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "822413",
+    "password": "postgres",
     "database": "b-track-test",
     "host": "127.0.0.1",
     "dialect": "postgres",

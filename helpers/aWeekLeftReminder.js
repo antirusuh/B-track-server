@@ -69,4 +69,4 @@ const aWeekLeftReminder = function () {
   });
 };
 
-module.exports = aWeekLeftReminder;
+module.exports = { aWeekLeftReminder };
