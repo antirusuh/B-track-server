@@ -62,4 +62,4 @@ const dueDateReport = function () {
   });
 };
 
-module.exports = dueDateReport;
+module.exports = { dueDateReport };
