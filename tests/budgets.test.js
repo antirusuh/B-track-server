@@ -438,14 +438,14 @@ describe("PUT /budgets/:id", () => {
       });
   });
 
-  test("[FAILED] Should return error message when input invalid, status code 400", (done) => {
+  test("[FAILED] Should return error message when input invalid, status code 500", (done) => {
     request(app)
       .put(`/budgets/${budgetDummy.id}`)
       .set("Accept", "application/json")
       .set("access_token", access_token)
       .send({ name: "" })
       .then((response) => {
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(500);
         expect(response.body).toHaveProperty("message", expect.anything());
         done();
       })

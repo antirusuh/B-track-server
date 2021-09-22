@@ -26,7 +26,7 @@ const user2 = {
   username: "user2",
   email: "user2@mail.com",
   password: "user2",
-  role: "staff",
+  role: "manager_department",
   DepartmentId: "",
 };
 const inputBudget = {
@@ -108,6 +108,38 @@ describe("Transaction Route Test", () => {
         .send(inputTransaction)
         .then((res) => {
           const { body, status } = res;
+          // transactionData = body;          
+
+          expect(status).toBe(201);
+          expect(body).toHaveProperty("id", expect.any(Number));
+          expect(body).toHaveProperty("name", inputTransaction.name);
+          expect(body).toHaveProperty("date", expect.anything());
+          expect(body).toHaveProperty("amount", inputTransaction.amount);
+          expect(body).toHaveProperty("BudgetId", budgetData.id);
+          expect(body).toHaveProperty("CategoryId", categoryData.id);
+          expect(body).toHaveProperty("UserId", userData.id);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("201 success create transaction but exceed 80% of budget", (done) => {
+      let inputTransaction = {
+        name: "Pen Three",
+        date: new Date(),
+        amount: 4500000,
+        invoice: "http://test.com",
+        CategoryId: categoryData.id,
+      };
+      request(app)
+        .post(`/transactions/${budgetData.id}`)
+        .set("Accept", "application/json")
+        .set("access_token", userToken2)
+        .send(inputTransaction)
+        .then((res) => {
+          const { body, status } = res;
           transactionData = body;
 
           expect(status).toBe(201);
@@ -118,6 +150,31 @@ describe("Transaction Route Test", () => {
           expect(body).toHaveProperty("BudgetId", budgetData.id);
           expect(body).toHaveProperty("CategoryId", categoryData.id);
           expect(body).toHaveProperty("UserId", userData.id);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("400 out of budget", (done) => {
+      let inputTransaction = {
+        name: "Pen Two",
+        date: new Date(),
+        amount: 6000000,
+        invoice: "http://test.com",
+        CategoryId: categoryData.id,
+      };
+      request(app)
+        .post(`/transactions/${budgetData.id}`)
+        .set("Accept", "application/json")
+        .set("access_token", userToken2)
+        .send(inputTransaction)
+        .then((res) => {
+          const { body, status } = res;
+
+          expect(status).toBe(400);
+          expect(body).toHaveProperty("message", expect.any(String));
           done();
         })
         .catch((err) => {
@@ -254,7 +311,7 @@ describe("Transaction Route Test", () => {
   describe("PUT /transactions/:id", () => {
     test("200 success update transaction", (done) => {
       let inputTransaction = {
-        name: "Pen",
+        name: "Pen Edit 1",
         date: new Date(),
         amount: 15000,
         invoice: "http://test.com",
@@ -271,6 +328,78 @@ describe("Transaction Route Test", () => {
           const { body, status } = res;
 
           expect(status).toBe(200);
+          expect(body).toHaveProperty("message", expect.any(String));
+          return done();
+        });
+    });
+
+    test("200 budget below 80% but more than current amount", (done) => {
+      let inputTransaction = {
+        name: "Pen Edit 3",
+        date: new Date(),
+        amount: 25000,
+        invoice: "http://test.com",
+        CategoryId: categoryData.id,
+      };
+
+      request(app)
+        .put(`/transactions/${transactionData.id}`)
+        .set("Accept", "application/json")
+        .set("access_token", userToken2)
+        .send(inputTransaction)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+
+          expect(status).toBe(200);
+          expect(body).toHaveProperty("message", expect.any(String));
+          return done();
+        });
+    });
+
+    test("200 budget exceed 80%", (done) => {
+      let inputTransaction = {
+        name: "Pen Edit 3",
+        date: new Date(),
+        amount: 4900000,
+        invoice: "http://test.com",
+        CategoryId: categoryData.id,
+      };
+
+      request(app)
+        .put(`/transactions/${transactionData.id}`)
+        .set("Accept", "application/json")
+        .set("access_token", userToken2)
+        .send(inputTransaction)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+
+          expect(status).toBe(200);
+          expect(body).toHaveProperty("message", expect.any(String));
+          return done();
+        });
+    });
+
+    test("400 out of budget", (done) => {
+      let inputTransaction = {
+        name: "Pen Edit 2",
+        date: new Date(),
+        amount: 60000000,
+        invoice: "http://test.com",
+        CategoryId: categoryData.id,
+      };
+
+      request(app)
+        .put(`/transactions/${transactionData.id}`)
+        .set("Accept", "application/json")
+        .set("access_token", userToken2)
+        .send(inputTransaction)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+
+          expect(status).toBe(400);
           expect(body).toHaveProperty("message", expect.any(String));
           return done();
         });
@@ -323,28 +452,28 @@ describe("Transaction Route Test", () => {
         });
     });
 
-    test("400 validation error", (done) => {
-      let inputTransaction = {
-        name: "",
-        date: new Date(),
-        amount: "",
-        invoice: "",
-        CategoryId: null,
-      };
+    // test("400 validation error", (done) => {
+    //   let inputTransaction = {
+    //     name: null,
+    //     date: new Date(),
+    //     amount: null,
+    //     invoice: null,
+    //     CategoryId: null,
+    //   };
 
-      request(app)
-        .put(`/transactions/${transactionData.id}`)
-        .set("Accept", "application/json")
-        .set("access_token", userToken2)
-        .send(inputTransaction)
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", expect.anything());
-          return done();
-        });
-    });
+    //   request(app)
+    //     .put(`/transactions/${transactionData.id}`)
+    //     .set("Accept", "application/json")
+    //     .set("access_token", userToken2)
+    //     .send(inputTransaction)
+    //     .end((err, res) => {
+    //       if (err) return done(err);
+    //       const { body, status } = res;
+    //       expect(status).toBe(400);
+    //       expect(body).toHaveProperty("message", expect.anything());
+    //       return done();
+    //     });
+    // });
 
     test("404 Transaction Not Found", (done) => {
       request(app)

@@ -48,7 +48,7 @@ class BudgetController {
 
   static async getBudgetDetails(req, res, next) {
     const budgetId = req.params.id;
-    console.log(budgetId, "ID");
+
     try {
       const budgetDetails = await Budget.findByPk(budgetId, {
         include: [
