@@ -13,15 +13,19 @@ async function sendMail(email, subject, text, html) {
     })
   );
 
-  let info = await transporter.sendMail({
-    from: "B-Track App", // sender address
-    to: email, // list of receivers
-    subject: subject, // Subject line
-    text: text, // plain text body
-    html: html, // html body
-  });
-
-  console.log("Email sent");
+  try {
+    let info = await transporter.sendMail({
+      from: "B-Track App", // sender address
+      to: email, // list of receivers
+      subject: subject, // Subject line
+      text: text, // plain text body
+      html: html, // html body
+    });
+  
+    console.log("Email sent");
+  } catch (err) {
+    Promise.reject(err)
+  }
 
   /*
   Send mail format example:

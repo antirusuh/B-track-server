@@ -62,7 +62,7 @@ class TransactionController {
         );
         const updatedBudget = await Budget.findByPk(budgetId);
 
-        sendMail(
+        await sendMail(
           managerDept.email,
           `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
           `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
@@ -152,7 +152,7 @@ class TransactionController {
               { where: { id: budgetData.id }, returning: true }
             );
 
-            sendMail(
+            await sendMail(
               managerDept.email,
               `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
               `A warning for budget ${updatedBudget.name} exceeds 80% usage`,
