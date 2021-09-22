@@ -107,11 +107,11 @@ class TransactionController {
       const { id } = req.params;
       const userId = req.user.id;
       const found = await Transaction.findByPk(id);
-      const budgetData = await Budget.findByPk(Transaction.BudgetId);
 
       if (!found) {
         throw { name: "NotFound" };
       } else {
+        const budgetData = await Budget.findByPk(found.BudgetId);
         const { name, date, amount, invoice, CategoryId } = req.body;
         const transactionData = {
           name,
@@ -123,19 +123,21 @@ class TransactionController {
           CategoryId,
         };
 
-        if (amount > Transaction.amount) {
-          if (budgetData.amount - (amount - Transaction.amount) < 0) {
+        if (amount > found.amount) {
+          if (budgetData.amount - (amount - found.amount) < 0) {
             res.status(400).json({ message: "Out of budget" });
-          } else if (
-            budgetData.amount -
-              (amount - Transaction.amount) / budgetData.initial_amount <=
-            0.2
-          ) {
+          } else if ((budgetData.amount - (amount - found.amount)) / budgetData.initial_amount <= 0.2) {
             await Transaction.update(transactionData, { where: { id } });
+            const managerDept = await User.findOne({
+              where: {
+                DepartmentId: req.user.DepartmentId,
+                role: "manager_department",
+              },
+            });
             const updatedBudget = await Budget.update(
               {
                 ...budgetData,
-                amount: budgetData.amount - (amount - Transaction.amount),
+                amount: budgetData.amount - (amount - found.amount),
               },
               { where: { id: budgetData.id }, returning: true }
             );
@@ -161,11 +163,10 @@ class TransactionController {
             res.status(200).json({ message: `Update success for ID ${id}` });
           } else {
             await Transaction.update(transactionData, { where: { id } });
-
             await Budget.update(
               {
                 ...budgetData,
-                amount: budgetData.amount - (amount - Transaction.amount),
+                amount: budgetData.amount - (amount - found.amount),
               },
               { where: { id: budgetData.id } }
             );
@@ -173,13 +174,15 @@ class TransactionController {
             res.status(200).json({ message: `Update success for ID ${id}` });
           }
         } else {
+          await Transaction.update(transactionData, { where: { id } });
           await Budget.update(
             {
               ...budgetData,
-              amount: budgetData.amount + (Transaction.amount - amount),
+              amount: budgetData.amount + (found.amount - amount),
             },
             { where: { id: budgetData.id } }
           );
+          res.status(200).json({ message: `Update success for ID ${id}` });
         }
       }
     } catch (err) {
@@ -191,15 +194,15 @@ class TransactionController {
     try {
       const { id } = req.params;
       const transactionData = await Transaction.findByPk(id);
-      const budgetData = await Budget.findByPk(transactionData.BudgetId);
 
       if (!transactionData) {
-        throw { name: "NotFound" };
+        throw ({ name: "NotFound" });
       } else {
+        const budgetData = await Budget.findByPk(transactionData.BudgetId);
         await Budget.update(
           {
             ...budgetData,
-            amount: budgetData.amount + transactionData.amount,
+            amount: budgetData.amount - transactionData.amount,
           },
           { where: { id: budgetData.id } }
         );

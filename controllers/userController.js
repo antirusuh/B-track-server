@@ -22,54 +22,46 @@ class UserController {
     }
   }
 
-    static async login(req, res, next) {
-        const { email, password } = req.body
-        try {
-            const user = await User.findOne({
-                where: {
-                    email
-                },
-                include: {
-                    model: Department,
-                    attributes: ['name']
-                }
-            })
-            const invalid = {
-                name: 'Unauthorized',
-                message: 'Invalid email/password'
-            }
-            
-            if (!user) {
-                throw (invalid)
-            } else {
-                if (!checkPassword(password, user.password)) {
-                    throw (invalid)
-                } else {
-                    const payload = {
-                        id: user.id,
-                        username: user.username,
-                        role: user.role,
-                        DepartmentId: user.DepartmentId
-                    }
-
+  static async login(req, res, next) {
+    const { email, password } = req.body
+    try {
+      const user = await User.findOne({
+        where: {
+          email
+        },
+        include: {
+          model: Department,
+          attributes: ['name']
+        }
+      })
+      const invalid = {
+        name: 'Unauthorized',
+        message: 'Invalid email/password'
+      }
+      if (!user) {
+        throw (invalid)
+      } else {
+        if (!checkPassword(password, user.password)) {
+            throw (invalid)
+        } else {
+          const payload = {
+              id: user.id,
+              username: user.username,
+              role: user.role,
+              DepartmentId: user.DepartmentId
+          }
           const access_token = createToken(payload);
-
-
-                    res.status(200).json({
-                        access_token,
-                        username: user.username,
-                        role: user.role,
-                        DepartmentId: user.DepartmentId,
-                        departmentName: user.Department.name 
-                    })
-                }
-            }
-        } catch (err) {
-            next(err)
+            res.status(200).json({
+              access_token,
+              username: user.username,
+              role: user.role,
+              DepartmentId: user.DepartmentId,
+              departmentName: user.Department.name 
+            })
         }
       }
     } catch (err) {
-      next(err);
+        next(err)
     }
   }
 }
